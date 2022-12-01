@@ -2,47 +2,30 @@ import { Component, Injector, OnInit, Renderer2 } from '@angular/core';
 import { AppComponentBase } from '@shared/app-component-base';
 import { SignalRAspNetCoreHelper } from '@shared/helpers/SignalRAspNetCoreHelper';
 import { LayoutStoreService } from '@shared/layout/layout-store.service';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   templateUrl: './app.component.html'
 })
-export class AppComponent extends AppComponentBase implements OnInit {
-  sidebarExpanded: boolean;
+export class AppComponent implements OnInit{
 
-  constructor(
-    injector: Injector,
-    private renderer: Renderer2,
-    private _layoutStore: LayoutStoreService
-  ) {
-    super(injector);
-  }
+  topbarTheme = 'light';
 
-  ngOnInit(): void {
-    this.renderer.addClass(document.body, 'sidebar-mini');
+  menuTheme = 'dim';
 
-    SignalRAspNetCoreHelper.initSignalR();
+  layoutMode = 'light';
 
-    abp.event.on('abp.notifications.received', (userNotification) => {
-      abp.notifications.showUiNotifyForUserNotification(userNotification);
+  menuMode = 'static';
 
-      // Desktop notification
-      Push.create('AbpZeroTemplate', {
-        body: userNotification.notification.data.message,
-        icon: abp.appPath + 'assets/app-logo-small.png',
-        timeout: 6000,
-        onClick: function () {
-          window.focus();
-          this.close();
-        }
-      });
-    });
+  isRTL = false;
 
-    this._layoutStore.sidebarExpanded.subscribe((value) => {
-      this.sidebarExpanded = value;
-    });
-  }
+  inputStyle = 'outlined';
 
-  toggleSidebar(): void {
-    this._layoutStore.setSidebarExpanded(!this.sidebarExpanded);
+  ripple: boolean;
+
+  constructor(private primengConfig: PrimeNGConfig) {}
+
+  ngOnInit() {
+      this.primengConfig.ripple = true;
   }
 }
